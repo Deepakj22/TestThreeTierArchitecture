@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="BusinessLogicLayer/BusinessLogicLayer.csproj" />
+  <Project Path="DataAccessLayer/DataAccessLayer.csproj" />
+  <Project Path="PresentationLayer/PresentationLayer.csproj" />
+  <Project Path="ThreeTierArchitecture.Domain/ThreeTierArchitecture.Domain.csproj" Id="32aff5cf-fa6e-4e3b-ad89-ab19c41ca7f4" />
+</Solution>
