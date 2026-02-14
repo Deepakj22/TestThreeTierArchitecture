@@ -38,7 +38,7 @@ public class AuthService : IAuthService
         {
             UserName = dto.UserName,
             Email = dto.Email,
-            Role = dto.Role,
+            Role = UserRole.Admin,
             PasswordHash = _passwordHasher.HashPassword(dto.Password)
 
         };
