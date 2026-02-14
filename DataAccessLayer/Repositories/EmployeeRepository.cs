@@ -1,5 +1,4 @@
-﻿
-using DataAccessLayer.Data;
+﻿using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using ThreeTierArchitecture.Domain.Entities;
 using ThreeTierArchitecture.Domain.Interface;
@@ -21,7 +20,8 @@ public class EmployeeRepository : IEmployeeRepository
 
     public async Task<bool> DeleteEmployeeAsync(Guid id)
     {
-       var employee = await _dbContext.Employees.FirstOrDefaultAsync(x => x.Id == id);
+       var employee = await _dbContext.Employees
+                                      .FirstOrDefaultAsync(x => x.Id == id);
         if(employee == null) 
             return false;
         _dbContext.Employees.Remove(employee);
@@ -31,12 +31,16 @@ public class EmployeeRepository : IEmployeeRepository
 
     public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
     {
-       return await _dbContext.Employees.ToListAsync();
+       return await _dbContext.Employees
+                              .AsNoTracking()
+                              .ToListAsync();
     }
 
     public async Task<Employee?> GetEmployeeByIdAsync(Guid id)
     {
-        return await _dbContext.Employees.FirstOrDefaultAsync(x => x.Id == id);
+        return await _dbContext.Employees
+                               .AsNoTracking()
+                               .FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public async Task<Employee> UpdateEmployeeAsync(Employee employee)

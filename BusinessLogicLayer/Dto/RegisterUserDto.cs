@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
+//using ThreeTierArchitecture.Domain.Entities;
 
 namespace BusinessLogicLayer.Dto;
 
@@ -15,9 +16,9 @@ public class RegisterUserDto
     [MinLength(8)]
     public string Password { get; set; } = string.Empty;
     [Required]
-    public string? Role { get; set; } 
+    [Compare("Password",
+        ErrorMessage = "Password do not match")]
+    public string ConfirmPassword { get; set; } = string.Empty;
+    //[Required]
+    //public UserRole Role { get; set; } 
 }
-//[Required]
-//[Compare("Password",
-//    ErrorMessage ="Password do not match")]
-//public string ConfirmPassword { get; set; } = string.Empty;

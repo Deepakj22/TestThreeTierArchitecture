@@ -1,3 +1,4 @@
+using BusinessLogicLayer.Dto;
 using BusinessLogicLayer.Interface;
 using BusinessLogicLayer.Services;
 using DataAccessLayer.Data;
@@ -20,7 +21,7 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<ITokenService,TokenService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasherService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

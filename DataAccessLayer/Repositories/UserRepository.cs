@@ -1,5 +1,4 @@
-﻿
-using DataAccessLayer.Data;
+﻿using DataAccessLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using ThreeTierArchitecture.Domain.Entities;
 using ThreeTierArchitecture.Domain.Interface;
@@ -34,22 +33,30 @@ public class UserRepository : IUserRepository
 
     public async Task<ApplicationUser?> GetApplicationUserByEmailAsync(string email)
     {
-        return await _dbContext.Users.FirstOrDefaultAsync(e => e.Email == email);
+        return await _dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(e => e.Email.ToLower() == email);
     }
 
     public async Task<ApplicationUser?> GetApplicationUserByIdAsync(Guid id)
     {
-        return await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+        return await _dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == id);
     }
 
     public async Task<ApplicationUser?> GetApplicationUserByUserNameAsync(string username)
     {
-        return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == username);
+        return await _dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.UserName == username);
     }
 
     public async Task<IEnumerable<ApplicationUser>> GetApplicationUsersAsync()
     {
-        return await _dbContext.Users.ToListAsync();
+        return await _dbContext.Users
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public async Task<ApplicationUser?> UpdateApplicationUserAsync(ApplicationUser applicationUser)

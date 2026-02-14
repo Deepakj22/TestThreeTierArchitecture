@@ -1,6 +1,7 @@
 ﻿
+using BusinessLogicLayer.Dto;
 using BusinessLogicLayer.Interface;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,34 +12,35 @@ namespace BusinessLogicLayer.Services;
 
 public class TokenService : ITokenService
 {
-    private readonly IConfiguration _config;
+    private readonly JwtSettings _jwtSettings;
 
-    public TokenService(IConfiguration config)
+    public TokenService(IOptions<JwtSettings> jwtOptions)
     {
-        _config = config;
+        _jwtSettings = jwtOptions.Value;
     }
     public string GenerateJwtToken(ApplicationUser user)
     {
-        var jwt = _config.GetSection("JwtSettings");
+        //var jwt = _config.GetSection("JwtSettings");
+        ArgumentNullException.ThrowIfNull(user);
 
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.UserName),
             new Claim(ClaimTypes.Email,user.Email),
-            new Claim(ClaimTypes.Role,user.Role!)
+            new Claim(ClaimTypes.Role,user.Role.ToString())
         };
         var key = new SymmetricSecurityKey(
-           Encoding.UTF8.GetBytes(jwt["Key"]!)
+           Encoding.UTF8.GetBytes(_jwtSettings.Key)
        );
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-                    issuer: jwt["Issuer"],
-                    audience: jwt["Audience"],
+                    issuer: _jwtSettings.Issuer,
+                    audience: _jwtSettings.Audience,
                     claims: claims,
-                    expires: DateTime.Now.AddHours(2),
-                    signingCredentials: creds
+                    expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
+                    signingCredentials: credentials
                 );
 
         return new JwtSecurityTokenHandler().WriteToken(token);

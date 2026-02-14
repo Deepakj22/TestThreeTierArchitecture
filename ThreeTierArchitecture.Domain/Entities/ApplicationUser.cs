@@ -6,9 +6,9 @@ public class ApplicationUser
     public string Email { get; set; } = string.Empty; 
     public string UserName { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
-    public string? Role { get; set; } = string.Empty;
-    public Guid EmployeeId { get; set; }
-    public Employee? Employee { get; set; }
+    public UserRole Role { get; set; }
+    //public Guid EmployeeId { get; set; }
+
+    public Employee? Employee { get; set; }//In microservices, avoid navigation properties across services.
 }
 
-//public string Role { get; set; } = string.Empty;
