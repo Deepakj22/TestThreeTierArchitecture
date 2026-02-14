@@ -21,7 +21,9 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<ITokenService,TokenService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasherService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+//builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+var jwtSettings = builder.Configuration.GetSection("JwtSettings")
+    .Get<JwtSettings>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -31,9 +33,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["JwtSetting:Issuer"],
-            ValidAudience = builder.Configuration["JwtSetting:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSetting:Key"]!))
+            ValidIssuer = jwtSettings!.Issuer,
+            ValidAudience = jwtSettings!.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings.Key))
+            //ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+            //ValidAudience = builder.Configuration["JwtSettings:Audience"],
+            //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]!))
         };
         options.Events = new JwtBearerEvents
         {
